@@ -221,7 +221,7 @@ def main():
 
         print(f'Dev loss: %.4f, Kaggle: {final_score}, Root acc: {scores[0]}, Vowel acc: {scores[1]}, Consonant acc: {scores[2]}'%(loss))
         
-        if epoch > 2:
+        if epoch > 1:
             history2['acc'].plot()
             plt.savefig(f'epoch{epoch}_acc.png')
         
