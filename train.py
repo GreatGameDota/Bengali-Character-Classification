@@ -109,55 +109,55 @@ def main():
         # ############## TRAINING ###########################################
         # ###################################################################
 
-        # model.train()
-        # total_loss = 0
-        # total_loss_1 = 0
-        # total_loss_2 = 0
-        # total_loss_3 = 0
+        model.train()
+        total_loss = 0
+        total_loss_1 = 0
+        total_loss_2 = 0
+        total_loss_3 = 0
         
-        # # ratio = pow(.5,epoch/50)
-        # ratio = 0.7
-        # # ratio = 1.0
+        # ratio = pow(.5,epoch/50)
+        ratio = 0.7
+        # ratio = 1.0
         
-        # t = tqdm(train_loader)
-        # for batch_idx, (img_batch, y_batch) in enumerate(t):
-        #     img_batch = img_batch.cuda().float()
-        #     y_batch = y_batch.cuda().long()
+        t = tqdm(train_loader)
+        for batch_idx, (img_batch, y_batch) in enumerate(t):
+            img_batch = img_batch.cuda().float()
+            y_batch = y_batch.cuda().long()
             
-        #     optimizer.zero_grad()
+            optimizer.zero_grad()
             
-        #     label1 = y_batch[:,0]
-        #     label2 = y_batch[:,1]
-        #     label3 = y_batch[:,2]
-        #     rand = np.random.rand()
-        #     if rand < 0.4:
-        #         images, targets = mixup(img_batch, label1, label2, label3, 0.4)
-        #         output1, output2, output3 = model(images)
-        #         l1,l2,l3 = mixup_criterion(output1, output2, output3, targets, rate=ratio)
-        #     elif rand < 0.8:
-        #         images, targets = cutmix(img_batch, label1, label2, label3, 0.4)
-        #         output1, output2, output3 = model(images)
-        #         l1,l2,l3 = cutmix_criterion(output1, output2, output3, targets, rate=ratio)
-        #     else:
-        #         output1,output2,output3 = model(img_batch)
-        #         l1, l2, l3 = criterion1(output1,output2,output3, y_batch)
+            label1 = y_batch[:,0]
+            label2 = y_batch[:,1]
+            label3 = y_batch[:,2]
+            rand = np.random.rand()
+            if rand < 0.4:
+                images, targets = mixup(img_batch, label1, label2, label3, 0.4)
+                output1, output2, output3 = model(images)
+                l1,l2,l3 = mixup_criterion(output1, output2, output3, targets, rate=ratio)
+            elif rand < 0.8:
+                images, targets = cutmix(img_batch, label1, label2, label3, 0.4)
+                output1, output2, output3 = model(images)
+                l1,l2,l3 = cutmix_criterion(output1, output2, output3, targets, rate=ratio)
+            else:
+                output1,output2,output3 = model(img_batch)
+                l1, l2, l3 = criterion1(output1,output2,output3, y_batch)
 
-        #     loss = l1+l2+l3
-        #     total_loss += loss
-        #     total_loss_1 += l1
-        #     total_loss_2 += l2
-        #     total_loss_3 += l3
-        #     t.set_description(f'Epoch {epoch+1}/{n_epochs}, LR: %6f, Ratio: %.4f, Loss: %.4f, Root loss: %.4f, Vowel loss: %.4f, Consonant loss: %.4f'%(optimizer.state_dict()['param_groups'][0]['lr'],ratio,total_loss/(batch_idx+1),total_loss_1/(batch_idx+1),total_loss_2/(batch_idx+1),total_loss_3/(batch_idx+1)))
-        #     # t.set_description(f'Epoch {epoch}/{n_epochs}, LR: %6f, Loss: %.4f'%(optimizer.state_dict()['param_groups'][0]['lr'],total_loss/(batch_idx+1)))
+            loss = l1+l2+l3
+            total_loss += loss
+            total_loss_1 += l1
+            total_loss_2 += l2
+            total_loss_3 += l3
+            t.set_description(f'Epoch {epoch+1}/{n_epochs}, LR: %6f, Ratio: %.4f, Loss: %.4f, Root loss: %.4f, Vowel loss: %.4f, Consonant loss: %.4f'%(optimizer.state_dict()['param_groups'][0]['lr'],ratio,total_loss/(batch_idx+1),total_loss_1/(batch_idx+1),total_loss_2/(batch_idx+1),total_loss_3/(batch_idx+1)))
+            # t.set_description(f'Epoch {epoch}/{n_epochs}, LR: %6f, Loss: %.4f'%(optimizer.state_dict()['param_groups'][0]['lr'],total_loss/(batch_idx+1)))
 
-        #     if history is not None:
-        #         history.loc[epoch + batch_idx / len(train_loader), 'train_loss'] = loss.data.cpu().numpy()
-        #         history.loc[epoch + batch_idx / len(train_loader), 'lr'] = optimizer.state_dict()['param_groups'][0]['lr']
+            if history is not None:
+                history.loc[epoch + batch_idx / len(train_loader), 'train_loss'] = loss.data.cpu().numpy()
+                history.loc[epoch + batch_idx / len(train_loader), 'lr'] = optimizer.state_dict()['param_groups'][0]['lr']
                 
-        #     loss.backward()
-        #     optimizer.step()
-        #     # if scheduler is not None:
-        #     #     scheduler.step()
+            loss.backward()
+            optimizer.step()
+            # if scheduler is not None:
+            #     scheduler.step()
         
         # ###################################################################
         # ############## VALIDATION #########################################
@@ -221,7 +221,7 @@ def main():
 
         print(f'Dev loss: %.4f, Kaggle: {final_score}, Root acc: {scores[0]}, Vowel acc: {scores[1]}, Consonant acc: {scores[2]}'%(loss))
         
-        if epoch > 1:
+        if epoch > 0:
             history2['acc'].plot()
             plt.savefig(f'epoch{epoch}_acc.png')
         
