@@ -8,6 +8,7 @@ from tqdm import tqdm,trange
 from sklearn.model_selection import train_test_split
 import sklearn.metrics
 import gc
+import albumentations as A
 
 import torch
 import torch.nn as nn
@@ -27,41 +28,35 @@ from utils import *
 
 def main():
 #     args = parse_args()
-    IMAGE_PATH = 'data/train/'
+    IMAGE_PATH = 'data/images/'
     num_classes_1 = 168
     num_classes_2 = 11
     num_classes_3 = 7
+    stats = (0.0692, 0.2051)
 
-    train_df = pd.read_csv('data/train.csv')
-    train_df = train_df.set_index(['image_id'])
-    train_df = train_df.drop(['grapheme'], axis=1)
+    train_df = pd.read_csv('train_with_folds.csv')
+    # train_df = train_df.set_index(['image_id'])
+    # train_df = train_df.drop(['grapheme'], axis=1)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
 
     # Data Loaders
+    # df_train, df_val = train_test_split(train_df, test_size=0.2, random_state=2021)
 
-    # from iterstrat.ml_stratifiers import MultilabelStratifiedKFold
-    # mskf = MultilabelStratifiedKFold(n_splits=5, random_state=2020)
+    # train_transform = get_transform(128)
+    train_transform = A.Compose([
+                                A.ShiftScaleRotate(rotate_limit=5, p=0.9),
+                                A.CoarseDropout(max_holes=1, max_width=64, max_height=64, p=0.9),
+                                A.Normalize(mean=stats[0], std=stats[1], always_apply=True)
+    ])
+    val_transform = A.Compose([
+                            A.Normalize(mean=stats[0], std=stats[1], always_apply=True)
+    ])
 
-    # train_df2 = pd.read_csv('data/train.csv')
-    # train_df2 = train_df2.drop(['grapheme'], axis=1)
-    # train_df2['id'] = train_df2['image_id'].apply(lambda x: int(x.split('_')[1]))
-    # X, y = train_df2[['id', 'grapheme_root', 'vowel_diacritic', 'consonant_diacritic']].values[:,0], train_df2.values[:,1:]
-
-    # for fld, (train_idx, test_idx) in enumerate(mskf.split(X, y)):
-    #     if fld == 1:
-    #         df_train = [train_df2.iloc[p] for p in train_idx]
-    #         df_val = [train_df2.iloc[p] for p in test_idx]
-    #         break
-
-    df_train, df_val = train_test_split(train_df, test_size=0.2, random_state=2021)
-
-    train_transform = get_transform(128)
-    
-    BATCH_SIZE = 128
-    train_loader = get_loader(df_train, IMAGE_PATH, batch_size=BATCH_SIZE, workers=4, shuffle=True, transform=train_transform)
-    val_loader = get_loader(df_val, IMAGE_PATH, batch_size=BATCH_SIZE, workers=0, shuffle=False)
+    BATCH_SIZE = 64
+    train_loader = get_loader(train_df, IMAGE_PATH, folds=[1,2,3,4], batch_size=BATCH_SIZE, workers=4, shuffle=True, transform=train_transform)
+    val_loader = get_loader(train_df, IMAGE_PATH, folds=[0], batch_size=BATCH_SIZE, workers=0, shuffle=False)
 
     # Build Model
     model = load_model('seresnext50_32x4d', pretrained=True)
@@ -116,8 +111,8 @@ def main():
         total_loss_3 = 0
         
         # ratio = pow(.5,epoch/50)
-        ratio = 0.7
-        # ratio = 1.0
+        # ratio = 0.7
+        ratio = 1.0
         
         t = tqdm(train_loader)
         for batch_idx, (img_batch, y_batch) in enumerate(t):
@@ -130,17 +125,17 @@ def main():
             label2 = y_batch[:,1]
             label3 = y_batch[:,2]
             rand = np.random.rand()
-            if rand < 0.4:
+            if rand < 0.5:
                 images, targets = mixup(img_batch, label1, label2, label3, 0.4)
                 output1, output2, output3 = model(images)
                 l1,l2,l3 = mixup_criterion(output1, output2, output3, targets, rate=ratio)
-            elif rand < 0.8:
+            elif rand < 1:
                 images, targets = cutmix(img_batch, label1, label2, label3, 0.4)
                 output1, output2, output3 = model(images)
                 l1,l2,l3 = cutmix_criterion(output1, output2, output3, targets, rate=ratio)
-            else:
-                output1,output2,output3 = model(img_batch)
-                l1, l2, l3 = criterion1(output1,output2,output3, y_batch)
+            # else:
+            #     output1,output2,output3 = model(img_batch)
+            #     l1, l2, l3 = criterion1(output1,output2,output3, y_batch)
 
             loss = l1+l2+l3
             total_loss += loss
@@ -217,13 +212,14 @@ def main():
             history2.loc[epoch, 'consonant_acc'] = scores[2]
         
         if scheduler is not None:
-            scheduler.step(loss)
+            scheduler.step(final_score)
 
         print(f'Dev loss: %.4f, Kaggle: {final_score}, Root acc: {scores[0]}, Vowel acc: {scores[1]}, Consonant acc: {scores[2]}'%(loss))
         
         if epoch > 0:
             history2['acc'].plot()
-            plt.savefig(f'epoch{epoch}_acc.png')
+            plt.savefig(f'epoch%03d_acc.png'%(epoch+1))
+            plt.clf()
         
         if loss < best2:
             best2 = loss
