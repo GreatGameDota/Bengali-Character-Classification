@@ -34,7 +34,7 @@ def main():
     num_classes_3 = 7
     stats = (0.0692, 0.2051)
 
-    train_df = pd.read_csv('train_with_folds.csv')
+    train_df = pd.read_csv('data/train_with_folds.csv')
     # train_df = train_df.set_index(['image_id'])
     # train_df = train_df.drop(['grapheme'], axis=1)
 
@@ -170,7 +170,7 @@ def main():
         with torch.no_grad():
             for img_batch, y_batch in val_loader:
                 img_batch = img_batch.cuda().float()
-                y_batch = y_batch.cuda()
+                y_batch = y_batch.cuda().long()
 
                 o1, o2, o3 = model(img_batch)
 
