@@ -12,4 +12,4 @@ train_df2['fold'] = -1
 for fld, (_, test_idx) in enumerate(mskf.split(X, y)):
     train_df2.iloc[test_idx, -1] = fld
 
-train_df2.to_csv('train_with_folds.csv')
+train_df2.to_csv('data/train_with_folds.csv')

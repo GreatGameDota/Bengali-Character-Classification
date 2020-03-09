@@ -26,15 +26,17 @@ class ImageDataset(Dataset):
         img_name = self.paths[idx]
         img_path = f'{self.root_dir}{img_name}.png'
         
-        img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
-        img = cv2.resize(img, (128,128))
+        # img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+        img = cv2.imread(img_path)
+        # img = cv2.resize(img, (128,128))
 
         if self.transform is not None:
           img = self.transform(image=img)['image']
         
-        img = np.expand_dims(img, axis=0)
-        img = np.concatenate([img, img, img])
-        
+        # img = np.expand_dims(img, axis=0)
+        # img = np.concatenate([img, img, img])
+        img = np.rollaxis(img, -1, 0)
+
         labels = np.array(self.labels[idx]).astype(np.long)
         return [img, labels]
 

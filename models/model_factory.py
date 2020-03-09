@@ -27,28 +27,27 @@ class Head(torch.nn.Module):
     super(Head, self).__init__()
     
     self.f = nn.Flatten()
+
     self.l = nn.Linear(in_f, 512)
     self.m = Mish()
-    # self.g1 = nn.GroupNorm(32, in_f)
-    # self.g2 = nn.GroupNorm(32, 512)
-    self.d = nn.Dropout(0.5)
-    self.o = nn.Linear(512, out_f)
-    # self.o = nn.Linear(in_f, out_f)
+    
+    self.d = nn.Dropout(0.25)
+
+    # self.o = nn.Linear(512, out_f)
+    self.o = nn.Linear(in_f, out_f)
+
     self.b1 = nn.BatchNorm1d(in_f)
     self.b2 = nn.BatchNorm1d(512)
 
   def forward(self, x):
-    # x = self.g1(x)
     x = self.f(x)
-    x = self.b1(x)
-    # x = self.g1(x)
+    # x = self.b1(x)
     x = self.d(x)
 
-    x = self.l(x)
-    x = self.m(x)
-    x = self.b2(x)
-    # x = self.g2(x)
-    x = self.d(x)
+    # x = self.l(x)
+    # x = self.m(x)
+    # x = self.b2(x)
+    # x = self.d(x)
 
     out = self.o(x)
     return out
@@ -69,8 +68,8 @@ def load_model(name, checkpoint_path=None, pretrained=False):
     model = get_model(name, pretrained=pretrained)
     model = nn.Sequential(*list(model.children())[:-1]) # Remove original output layer
     
-    # model[0].final_pool = nn.Sequential(nn.BatchNorm2d(2048), Pooling(), Mish())
-    model[0].final_pool = nn.Sequential(Pooling())
+    model[0].final_pool = nn.Sequential(nn.AdaptiveAvgPool2d(1))
+    # model[0].final_pool = nn.Sequential(Pooling())
 
     model = FCN(model, 2048)
 
