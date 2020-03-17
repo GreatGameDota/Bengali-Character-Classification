@@ -41,7 +41,7 @@ This solution used just 137px by 236px original images. Albumentations[[4]](http
 
 ## Training
 
-I experimented a lot with training over the coarse of this competition. Different optimizers, intital learning rates, batch size, schedulers, mixup/cutmix.
+I experimented a lot with training over the coarse of this competition. Different optimizers, intital learning rates, batch size, schedulers, mixup/cutmix, etc.
 
 34th place training:  
 For this solution I used AdamW with initial learning rate of 0.001, ReduceLROnPlateau as scheduler, 50% of batches use mixup, 50% use cutmix, and trained for around 50 epochs. This solution was trained on Google Colab.
@@ -64,6 +64,12 @@ However the 34th place solution was not chosen which was a single seresnext50 I 
 Public LB: 0.9661
 Private LB: 0.9407
 ```
+
+## Lessons Learned
+
+What I should have done:
+- Pay more attention to unseen graphemes
+- Played with external data and fonts
 
 ## Final Thoughts
 
