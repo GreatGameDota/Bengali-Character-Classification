@@ -6,7 +6,7 @@ My 34th place solution and writeup for the [Bengali Character Classification Com
 
 ## Initial Thoughts
 
-<i>DISCLAIMER: This repo does not contain the code for the 34th place solution. Reason being that solution was a pipeline I made a month before the competition ended. So I don't have any of the code for it or the trained weights. I will however summarize what I can remember the solution being as well as talk about the final solution that got 201st on the private leaderboard.</i>
+<i>DISCLAIMER: This repo does not contain the code for the 34th place solution. Reason being that solution was a pipeline I made a month before the competition ended. So I don't have any of the code for it. I will however summarize what I can remember the solution being as well as talk about the final solution that got 201st on the private leaderboard.</i>
 
 Overall this competition was extremely enjoyable. I learned how Pytorch[[4]](https://github.com/GreatGameDota/Bengali-Character-Classification#final-thoughts) works, learned how to augment data, and even teamed up for the first time! I am very glad to get my first ever medal and have a solution that scored so high on the leaderboard. At the end of this competition I learned a whole lot about public vs private leaderboard scores and learned a lot from reading the amazing summaries and solution by the top teams! Now on to my solution!
 
@@ -48,6 +48,8 @@ For this solution I used AdamW with initial learning rate of 0.001, ReduceLROnPl
 
 201st place training:  
 For this solution I used Adam with initial learning rate of 0.00016, ReduceLROnPlateau as scheduler, same 50/50 split of mixup/cutmix, and trained for 100 epochs. This solution was trained on my own RTX 2080 I bought midway through this competition.
+
+For both solutions I split the data using MultilabelStratifiedKFold from Sklearn.
 
 ## Final Submission
 
