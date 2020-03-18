@@ -48,7 +48,7 @@ I experimented a lot with training over the coarse of this competition. Differen
 For this solution I used AdamW with initial learning rate of 0.001, ReduceLROnPlateau as scheduler, 50% of batches use mixup, 50% use cutmix, and trained for around 50 epochs. This solution was trained on Google Colab.
 
 201st place training:  
-For this solution I used Adam with initial learning rate of 0.00016, ReduceLROnPlateau as scheduler, same 50/50 split of mixup/cutmix, and trained for 100 epochs. This solution was trained on my own RTX 2080 I bought midway through this competition.
+For this solution I used Adam with initial learning rate of 0.00016, ReduceLROnPlateau as scheduler, same 50/50 split of mixup/cutmix, and trained for 100 epochs. I also applied loss weights per class: [.4, .3, .3], credit to [@Robin Smits](https://www.kaggle.com/rsmits) for that idea ([his kernal](https://www.kaggle.com/rsmits/keras-efficientnet-b3-training-inference)). This solution was trained on my own RTX 2080 I bought midway through this competition.
 
 For both solutions I split the data using MultilabelStratifiedKFold from Sklearn.
 
