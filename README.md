@@ -1,6 +1,6 @@
 # Bengali Character Classification
 
-My 34th place solution and writeup for the [Bengali Character Classification Compeittion](https://www.kaggle.com/c/bengaliai-cv19) hosted on Kaggle by BengaliAi
+My 34th place solution and writeup for the [Bengali Character Classification Competition](https://www.kaggle.com/c/bengaliai-cv19) hosted on Kaggle by Bengali.ai
 
 <img src='https://github.com/GreatGameDota/Bengali-Character-Classification/blob/master/assets/comp.png?raw=true' alt='comp' title='comp' height=500 width=500>
 
