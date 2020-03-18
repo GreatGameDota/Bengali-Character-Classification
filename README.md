@@ -24,6 +24,7 @@ This solution was a blend of many different models trained by my teammates and I
 All my models are very simple: pretrained seresnext50 with 3 heads for grapheme root, vowel, and consonant. For this solution view the below figure:
 
 ![](https://github.com/GreatGameDota/Bengali-Character-Classification/blob/master/assets/model.png)
+
 201st place model:  
 This solution used 4 seresnext50 models trained via the same pipeline on different folds. They have simple heads: Seresnext50 -> AdapdiveAvgPool2d -> Flatten -> Dropout -> Linear.
 
@@ -31,13 +32,13 @@ All seresnext50 pretrained weights were loaded from Pytorchcv[[4]](https://githu
 
 ## Input and Augmentation
 
-Input for this competition was pretty simple. I only used the given data converted to images. I used no external data (more on that later). The tough part of this competition was augmentation.
+Input for this competition was pretty simple. I only used the given data converted to images. I used no external data. The tough part of this competition was augmentation.
 
 34th place input:  
 This solution used the 128px by 128px preprocessed images made by @lafoss[[1]](https://github.com/GreatGameDota/Bengali-Character-Classification#final-thoughts). For augmentation I used Affine augmentations by @corochann[[2]](https://github.com/GreatGameDota/Bengali-Character-Classification#final-thoughts) as well as the mixup and cutmix implementation by @MachineLP[[3]](https://github.com/GreatGameDota/Bengali-Character-Classification#final-thoughts).
 
 201st place input:  
-This solution used just 137px by 236px original images. Albumentations[[4]](https://github.com/GreatGameDota/Bengali-Character-Classification#final-thoughts) for augmentations which include SSR, Cutout, IAAAffine, and IAAPerspective. This solution also used mixup and cutmix.
+This solution used just 137px by 236px original images. Albumentations[[4]](https://github.com/GreatGameDota/Bengali-Character-Classification#final-thoughts) for augmentations which included only SSR, and hard Cutout (64x64 single hole). This solution also used mixup and cutmix.
 
 ## Training
 
