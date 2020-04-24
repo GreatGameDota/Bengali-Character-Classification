@@ -84,7 +84,7 @@ Now on to the next competition and happy modeling!
 
 My previous competition: [6DoF Car Detection Competition](https://github.com/GreatGameDota/6DoF-Car-Detection-from-RGB-Images)
 
-My next competition: [Deepfake Detection Challenge](https://www.kaggle.com/c/deepfake-detection-challenge)
+My next competition: [Deepfake Detection Challenge](https://github.com/GreatGameDota/Deepfake-Detection/)
 
 ---
 
