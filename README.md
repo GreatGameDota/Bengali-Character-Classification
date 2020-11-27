@@ -23,7 +23,7 @@ This solution was a blend of many different models trained by my teammates and I
 34th place model:  
 All my models are very simple: pretrained seresnext50 with 3 heads for grapheme root, vowel, and consonant. For this solution view the below figure:
 
-![](https://github.com/GreatGameDota/Bengali-Character-Classification/blob/master/assets/model.png)
+<img src='https://github.com/GreatGameDota/Bengali-Character-Classification/blob/master/assets/model.png)?raw=true'>
 
 201st place model:  
 This solution used 4 seresnext50 models trained via the same pipeline on different folds. They have simple heads: Seresnext50 -> AdapdiveAvgPool2d -> Flatten -> Dropout -> Linear.
